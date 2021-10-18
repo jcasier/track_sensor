@@ -5,7 +5,7 @@
 
 #define VERSION "1.006"
 #define SYS_ID "CT Sensor Test - Direct to UNO ADC"
-const int adcpin = 0;
+const int adcpins[] = {0};
 
 // Sampling Parameters
 const unsigned long sampleTime = 2000UL; 
@@ -17,48 +17,48 @@ const unsigned long sampleInterval = sampleTime/numSamples;
 #define CALIBRATION_READS 300
 
 // variables to hold sensor quiescent readings
-float aqv;  // Average Quiescent Voltage; e.g. ADC Zero
-float aqc;  // Average Quiescent Current; 
+float aqv[1];  // Average Quiescent Voltage; e.g. ADC Zero
+float aqc[1];  // Average Quiescent Current; 
 
-void setup()
-{
+void setup() {
   Serial.begin(9600);
   //Serial.println(String(F(SYS_ID)) + String(F(" - SW:")) + String(F(VERSION)));
-  Serial.print("\nCalibrating the sensor at pin ");
-  Serial.println(adcpin);
-  aqv = determineVQ(adcpin); 
-  Serial.print("AQV: ");
-  Serial.print(aqv * 1000, 4);
-  Serial.print(" mV\t");
-  aqc = determineCQ(adcpin, aqv);
-  Serial.print("AQC: ");
-  Serial.print(aqc * 1000, 4);
-  Serial.print(" mA\t");
-  float sense = (aqc * DETECTION_MULTIPLIER) - aqc;
-  Serial.print("Detection Sensitivity: ");
-  Serial.print(sense * 1000, 3);
-  Serial.println(" mA\n\n");
+  for (int i = 0; i < adcpins.length, i++) {
+    Serial.print("\nCalibrating the sensor at pin ");
+    Serial.println(adcpins[i]);
+    aqv[i] = determineVQ(adcpins[i]); 
+    Serial.print("AQV: ");
+    Serial.print(aqv[i] * 1000, 4);
+    Serial.print(" mV\t");
+    aqc = determineCQ(adcpins[i], aqv[i]);
+    Serial.print("AQC: ");
+    Serial.print(aqc[i] * 1000, 4);
+    Serial.print(" mA\t");
+    float sense = (aqc[i] * DETECTION_MULTIPLIER) - aqc[i];
+    Serial.print("Detection Sensitivity: ");
+    Serial.print(sense * 1000, 3);
+    Serial.println(" mA\n\n");
+  }
   delay(7500);
   pinMode(22, OUTPUT);
   digitalWrite(22, LOW);
 }
 
-void loop(){
-  float current = readCurrent(adcpin, aqv);
-  float delta = abs(aqc - current);
-  bool occupied = delta > ((aqc * DETECTION_MULTIPLIER) - aqc);
-
-  Serial.print("Current Sensed: ");
-  Serial.print(current * 1000,3);
-  Serial.print(" mA\t");
-
-  if(occupied){
-    Serial.println("Occupied");
-    digitalWrite(22, HIGH);
-  } 
-  else {
-    Serial.println("Not occupied");
-    digitalWrite(22, LOW);
+void loop() {
+  for (int i = 0; i < adcpins.length; i++) {
+    float current = readCurrent(adcpins[i], aqv[i]);
+    float delta = abs(aqc[i] - current);
+    bool occupied = delta > ((aqc * DETECTION_MULTIPLIER) - aqc);
+    Serial.print("Current Sensed: ");
+    Serial.print(current * 1000,3);
+    Serial.print(" mA\t");  
+    if(occupied){
+      Serial.println("Occupied");
+      digitalWrite(22, HIGH);
+    } else {
+      Serial.println("Not occupied");
+      digitalWrite(22, LOW);
+    }
   }
   delay(3000);
 }
@@ -66,8 +66,7 @@ void loop(){
 //////////////////////////////////////////
 // Current Sensor Functions
 //////////////////////////////////////////
-float readCurrent(int pin, float adc_zero)
-{
+float readCurrent(int pin, float adc_zero) {
   float currentAcc = 0;
   unsigned int count = 0;
   unsigned long prevMicros = micros() - sampleInterval ;
