@@ -24,8 +24,9 @@ float aqc[numpins];  // Average Quiescent Current;
 
 void setup() {
   Serial.begin(9600);
+  delay(5000);
   for (int i = 0; i < numpins; i++) {
-    Serial.print("\nCalibrating the sensor at pin ");
+    Serial.print("Calibrating the sensor at pin ");
     Serial.println(adcpins[i]);
     aqv[i] = determineVQ(adcpins[i]); 
     Serial.print("AQV: ");
@@ -38,14 +39,15 @@ void setup() {
     float sense = (aqc[i] * DETECTION_MULTIPLIER) - aqc[i];
     Serial.print("Detection Sensitivity: ");
     Serial.print(sense * 1000, 3);
-    Serial.println(" mA\n");
+    Serial.println(" mA");
     pinMode(outpins[i], OUTPUT);
     digitalWrite(outpins[i], LOW);
   }
-  delay(7500);  
+  delay(5000);
 }
 
 void loop() {
+  Serial.println();
   for (int i = 0; i < numpins; i++) {
     float current = readCurrent(adcpins[i], aqv[i]);
     float delta = abs(aqc[i] - current);
