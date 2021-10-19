@@ -24,7 +24,6 @@ float aqc[numpins];  // Average Quiescent Current;
 
 void setup() {
   Serial.begin(9600);
-  //Serial.println(String(F(SYS_ID)) + String(F(" - SW:")) + String(F(VERSION)));
   for (int i = 0; i < numpins; i++) {
     Serial.print("\nCalibrating the sensor at pin ");
     Serial.println(adcpins[i]);
@@ -43,8 +42,7 @@ void setup() {
     pinMode(outpins[i], OUTPUT);
     digitalWrite(outpins[i], LOW);
   }
-  delay(7500);
-  
+  delay(7500);  
 }
 
 void loop() {
