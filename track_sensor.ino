@@ -5,9 +5,9 @@
 
 #define VERSION "1.006"
 #define SYS_ID "CT Sensor Test - Direct to UNO ADC"
-const int numpins = 3;
-const int adcpins[numpins] = {0, 1, 2};
-const int outpins[numpins] = {22, 23, 24};
+const int numpins = 1;
+const int adcpins[numpins] = {1};//, 1, 2};
+const int outpins[numpins] = {24};//, 23, 24};
 
 // Sampling Parameters
 const unsigned long sampleTime = 2000UL; 
@@ -40,8 +40,8 @@ void setup() {
     Serial.print("Detection Sensitivity: ");
     Serial.print(sense * 1000, 3);
     Serial.println(" mA");
-    pinMode(outpins[i], OUTPUT);
-    digitalWrite(outpins[i], LOW);
+    pinMode(outpins[i], INPUT);
+    digitalWrite(outpins[i], HIGH);
   }
   delay(5000);
 }
@@ -60,10 +60,14 @@ void loop() {
     Serial.print(" mA\t");  
     if(occupied){
       Serial.println("Occupied");
-      digitalWrite(outpins[i], HIGH);
+      pinMode(outpins[i], OUTPUT);
+
+      digitalWrite(outpins[i], LOW);
     } else {
       Serial.println("Not occupied");
-      digitalWrite(outpins[i], LOW);
+          pinMode(outpins[i], INPUT);
+
+      digitalWrite(outpins[i], HIGH);
     }
   }
   delay(3000);
