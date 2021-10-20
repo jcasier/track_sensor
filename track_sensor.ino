@@ -6,8 +6,10 @@
 #define VERSION "1.006"
 #define SYS_ID "CT Sensor Test - Direct to UNO ADC"
 const int numpins = 1;
-const int adcpins[numpins] = {1};//, 1, 2};
-const int outpins[numpins] = {24};//, 23, 24};
+const int adcpins[numpins] = {
+  1};//, 1, 2};
+const int outpins[numpins] = {
+  24};//, 23, 24};
 
 // Sampling Parameters
 const unsigned long sampleTime = 2000UL; 
@@ -57,20 +59,29 @@ void loop() {
     Serial.print("\t");
     Serial.print("Current Sensed: ");
     Serial.print(current * 1000,3);
-    Serial.print(" mA\t");  
-    if(occupied){
-      Serial.println("Occupied");
-      pinMode(outpins[i], OUTPUT);
-
-      digitalWrite(outpins[i], LOW);
-    } else {
-      Serial.println("Not occupied");
-          pinMode(outpins[i], INPUT);
-
-      digitalWrite(outpins[i], HIGH);
-    }
+    Serial.print(" mA\t");
+    setS88Pin(outpins[i], occupied);  
+      if(occupied){
+        Serial.println("Occupied");
+      } 
+      else {
+        Serial.println("Not occupied");
+      }
   }
   delay(3000);
+}
+
+float setS88Pin(int pin, boolean occupied) {
+  if(occupied){
+    // Connected to ground
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, LOW);
+  } 
+  else {
+    // 'Disconnected' from ground using pullup resistor
+    pinMode(pin, INPUT);
+    digitalWrite(pin, HIGH);
+  }
 }
 
 //////////////////////////////////////////
@@ -122,5 +133,6 @@ float determineCQ(int pin, float aqv) {
   CQ /= reps;
   return CQ;
 }
+
 
 
