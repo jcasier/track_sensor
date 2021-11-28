@@ -1,10 +1,10 @@
 
-// CT Sensor test
-// Using UNO built-in ADC to read the sensor
-//////////////////////////////////////////////////////////////////
+// 
+// Uses an Arduino and bunch of Current Transformer to determine track block occupancy
+// on my Marklin Layout.
+// Interfaces with a S88 decoder connected to the outpins via relays
+//
 
-#define VERSION "1.006"
-#define SYS_ID "CT Sensor Test - Direct to UNO ADC"
 const int numpins = 1;
 const int adcpins[numpins] = {
   1};//, 1, 2};
