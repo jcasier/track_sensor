@@ -1,8 +1,8 @@
 
 // 
-// Uses an Arduino and bunch of Current Transformer to determine track block occupancy
-// on my Marklin Layout.
-// Interfaces with a 60881 S88 decoder connected to the outpins via relays
+// Uses an Arduino and bunch of Current Transformers to determine track block occupancy
+//    on my Marklin Layout.
+// Interfaces with a Marklin 60881 S88 decoder connected to the outpins via relays
 //
 
 const int numpins = 3;
@@ -59,25 +59,13 @@ void loop() {
     Serial.print(current * 1000,3);
     Serial.print(" mA\t");
     setS88Pin(outpins[i], occupied);  
-    if(occupied){
-      Serial.println("Occupied");
-    } 
-    else {
-      Serial.println("Not occupied");
-    }
+    Serial.println(occupied ? "Occupied" : "Not occupied");
   }
   delay(3000);
 }
 
 float setS88Pin(int pin, boolean occupied) {
-  if(occupied){
-    // Connected to ground
-    digitalWrite(pin, LOW);
-  } 
-  else {
-    // 'Disconnected' from ground using pullup resistor
-    digitalWrite(pin, HIGH);
-  }
+   digitalWrite(pin, occupied ? LOW : HIGH);
 }
 
 //////////////////////////////////////////
