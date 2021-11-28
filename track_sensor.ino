@@ -2,7 +2,7 @@
 // 
 // Uses an Arduino and bunch of Current Transformer to determine track block occupancy
 // on my Marklin Layout.
-// Interfaces with a S88 decoder connected to the outpins via relays
+// Interfaces with a 60881 S88 decoder connected to the outpins via relays
 //
 
 const int numpins = 1;
