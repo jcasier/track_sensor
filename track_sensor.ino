@@ -5,11 +5,9 @@
 // Interfaces with a 60881 S88 decoder connected to the outpins via relays
 //
 
-const int numpins = 1;
-const int adcpins[numpins] = {
-  1};//, 1, 2};
-const int outpins[numpins] = {
-  24};//, 23, 24};
+const int numpins = 3;
+const int adcpins[numpins] = {A0, A1, A2};
+const int outpins[numpins] = {22, 23,24};
 
 // Sampling Parameters
 const unsigned long sampleTime = 2000UL; 
@@ -42,7 +40,7 @@ void setup() {
     Serial.print("Detection Sensitivity: ");
     Serial.print(sense * 1000, 3);
     Serial.println(" mA");
-    pinMode(outpins[i], INPUT);
+    pinMode(outpins[i], OUTPUT);
     digitalWrite(outpins[i], HIGH);
   }
   delay(5000);
@@ -61,12 +59,12 @@ void loop() {
     Serial.print(current * 1000,3);
     Serial.print(" mA\t");
     setS88Pin(outpins[i], occupied);  
-      if(occupied){
-        Serial.println("Occupied");
-      } 
-      else {
-        Serial.println("Not occupied");
-      }
+    if(occupied){
+      Serial.println("Occupied");
+    } 
+    else {
+      Serial.println("Not occupied");
+    }
   }
   delay(3000);
 }
@@ -74,12 +72,10 @@ void loop() {
 float setS88Pin(int pin, boolean occupied) {
   if(occupied){
     // Connected to ground
-    pinMode(pin, OUTPUT);
     digitalWrite(pin, LOW);
   } 
   else {
     // 'Disconnected' from ground using pullup resistor
-    pinMode(pin, INPUT);
     digitalWrite(pin, HIGH);
   }
 }
@@ -133,6 +129,3 @@ float determineCQ(int pin, float aqv) {
   CQ /= reps;
   return CQ;
 }
-
-
-
